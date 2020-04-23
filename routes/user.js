@@ -1,5 +1,6 @@
 const express = require('express');
-const user_model = require('../models/user_model')
+const bcrypt = require('bcrypt');
+const user_model = require('../models/user_model');
 
 const router = express.Router();
 
@@ -11,21 +12,28 @@ router.get('/', async (req, res) => {
 		res.json({message: err})
 	}
 });
-router.post('/', async (req, res) => {
-	const user = new user_model({
-		fullName: req.body.fullName,
-		email: req.body.email,
-		password: req.body.password
+router.post('/', (req, res) => {
+
+	bcrypt.hash(req.body.password, 10, async (err, hash) => {
+		const user = new user_model({
+			fullName: req.body.fullname,
+			email: req.body.email,
+			password: hash
+		})
+		try {
+			const saved_user = await user.save()
+			res.json(saved_user)
+		} catch (err) {
+			res.json({message: err})
+		}
 	})
-	try {
-		const saved_user = await user.save()
-		res.json(saved_user)
-	} catch (err) {
-		res.json({message: err})
-	}
 });
 router.get('/login', (req, res) => {
 	res.status(200).send('log log log');
 });
+
+// hash_it =  (pass) => {
+// 	 bcrypt.hash(pass, 10, (err, hash) => hash)
+// }
 
 module.exports = router;
