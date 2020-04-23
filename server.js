@@ -15,9 +15,11 @@ app.use(bodyParser.json());
 
 //Import routes
 const userRoute = require('./routes/user');
+const passwordRoute = require('./routes/password');
 
 //Routes
 app.use('/user', userRoute);
+app.use('/password', passwordRoute);
 
 app.get('/', (req, res) => {
 	res.status(200).send('Racine');

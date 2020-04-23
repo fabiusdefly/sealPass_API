@@ -32,8 +32,5 @@ router.get('/login', (req, res) => {
 	res.status(200).send('log log log');
 });
 
-// hash_it =  (pass) => {
-// 	 bcrypt.hash(pass, 10, (err, hash) => hash)
-// }
 
 module.exports = router;
