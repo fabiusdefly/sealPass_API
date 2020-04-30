@@ -1,21 +1,48 @@
 const express = require('express');
-const bcrypt = require('bcrypt');
 const password_model = require('../models/password_model');
 
 const router = express.Router();
 
-router.get('/', (req, res) => {
-	//TODO fonction pour récupérer la liste de tous les mots de passe enregistrer dans la base
+router.get('/', async (req, res) => {
+	try {
+		let getPasswords = await password_model.find()
+		res.json(getPasswords)
+	} catch (err) {
+		res.json({message: err})
+	}
 });
-router.post('/', (req, res) => {
-    //TODO fonction pour enregistrer un nouveau mot de passe dans la base
+router.post('/', async (req, res) => {
+    let password = password_model({
+		site: req.body.site,
+		email: req.body.email,
+		password: req.body.password
+	})
+	try {
+		let savedPassword = await password.save()
+		res.json(savedPassword)
+	} catch (err) {
+		res.json({message: err})
+	}
 });
-router.put('/:id', (req, res) => {
-	//TODO fonction pour mettre a jour un mot de passe dans la base
+router.put('/', async (req, res) => {
+	try{
+		let update = await password_model.findOneAndUpdate({_id: req.body.id},{$set:{site: req.body.site, email: req.body.email, password: req.body.password}},{new:true})
+		res.json(update)
+	} catch (err) {
+		res.json({message: err})
+	}	
 });
-router.delete('/:id', (req, res) => {
-	//TODO fonction pour Supprimer un mot de passe dans la base
+router.post('/delete', async (req, res) => {
+	try {
+		let delet = await password_model.deleteOne({_id: req.body.id})
+		res.json(delet)
+	} catch (err) {
+		res.json({message: err})
+	}
 });
+router.get('/generatePassword', (req, res) => {
+	//TODO générateur de mot de passe
+})
 
 
 
